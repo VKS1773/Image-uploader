@@ -1,12 +1,11 @@
-const mongoose = require("momgoose");
+const mongoose = require("mongoose");
 
-//create schema
-const useSchema = mongoose.schema({
+const userSchema = new mongoose.Schema({
   fname: {
     type: String,
     required: true,
   },
-  imagpath: {
+  imgpath: {
     type: String,
     required: true,
   },
@@ -15,5 +14,8 @@ const useSchema = mongoose.schema({
   },
 });
 
-const users = new mongoose.modal("users", useSchema);
+// create model
+
+const users = new mongoose.model("users", userSchema);
+
 module.exports = users;

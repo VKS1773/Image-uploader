@@ -1,66 +1,81 @@
 import React, { useState } from "react";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 const Register = () => {
-  const [fname, setFname] = useState("");
+  const [fname, setFName] = useState("");
+
   const [file, setFile] = useState("");
+
+  const history = useNavigate();
 
   const setdata = (e) => {
     const { value } = e.target;
-    setFname(value);
+    setFName(value);
   };
-  const setfiledata = (e) => {
+
+  const setimgfile = (e) => {
     setFile(e.target.files[0]);
   };
 
-  const adddata = async (e) => {
+  // adduser data
+
+  const addUserData = async (e) => {
     e.preventDefault();
 
-    const formdata = new FormData();
-    formdata.append("photo", file);
-    formdata.append("fname", fname);
+    var formData = new FormData();
+    formData.append("photo", file);
+    formData.append("fname", fname);
 
     const config = {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     };
-    const res = await axios.post("/register", formdata, config);
-    console.log(res);
+
+    const res = await axios.post("/register", formData, config);
+
+    if (res.data.status === 401 || !res.data) {
+      console.log("errror");
+    } else {
+      history("/");
+    }
   };
+
   return (
-    <div className="container">
-      <h1>Upload your image here</h1>
-      <form>
-        <div className="mb-3">
-          <label htmlFor="exampleInputEmail1" className="form-label">
-            UserName
-          </label>
-          <input
-            type="text"
-            className="form-control"
-            id="exampleInputEmail1"
-            aria-describedby="emailHelp"
-            name="fname"
-            onChange={setdata}
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="exampleInputPassword1" className="form-label">
-            Image
-          </label>
-          <input
-            type="file"
-            className="form-control"
-            id="exampleInputPassword1"
-            name="photo"
-            onChange={setfiledata}
-          />
-        </div>
-        <button type="submit" className="btn btn-primary" onClick={adddata}>
-          Submit
-        </button>
-      </form>
-    </div>
+    <>
+      <div className="container mt-3">
+        <h1>Upload Your Img Here</h1>
+
+        <Form className="mt-3">
+          <Form.Group className="mb-3" controlId="formBasicEmail">
+            <Form.Label>UserName</Form.Label>
+            <Form.Control
+              type="text"
+              name="fname"
+              onChange={setdata}
+              placeholder=""
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="formBasicPassword">
+            <Form.Label>Select Your Image</Form.Label>
+            <Form.Control
+              type="file"
+              onChange={setimgfile}
+              name="photo"
+              placeholder=""
+            />
+          </Form.Group>
+          <Button variant="primary" type="submit" onClick={addUserData}>
+            Submit
+          </Button>
+        </Form>
+      </div>
+    </>
   );
 };
+
 export default Register;
